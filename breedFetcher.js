@@ -1,18 +1,32 @@
 const request = require("request");
 
-const input = process.argv[2];
+const fetchBreedDescription = (breedName, callback) => {
 
-request(`https://api.thecatapi.com/v1/breeds/search?q=${input}`, (error, response, body) => {
-  console.error('error:', error); // Print the error if one occurred
-  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-  if (response.statusCode !== 200) {
-    throw error;
-  }
+  //Make request to endpoint with breedName
+  request(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`, (error, response, body) => {
+    // if error in request;
+    if (error) {
+      //error in domain name
+      callback(error), null;
+      return;
+    }
 
-  const data = JSON.parse(body);
-  if (typeof data[0] === "undefined") {
-    console.log(`No Results Found`);
-    return;
-  }
-  console.log(data[0]);
-});
+    //if response has !200 status code
+    if (response.statusCode !== 200) {
+      callback(error, null);
+      return;
+    }
+
+    //If request is good
+    //Parse convert json to object
+    const data = JSON.parse(body);
+    //If data is empty,
+    if (typeof data[0] === "undefined") {
+      callback(`No Results Found!`, null);
+    } else {
+      callback(null, data[0]);
+    }
+  });
+};
+
+module.exports = { fetchBreedDescription };
