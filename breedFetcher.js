@@ -24,7 +24,7 @@ const fetchBreedDescription = (breedName, callback) => {
     if (typeof data[0] === "undefined") {
       callback(`No Results Found!`, null);
     } else {
-      callback(null, data[0]);
+      callback(null, data[0].description);
     }
   });
 };
